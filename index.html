@@ -3,10 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>OrganicAgropastoralepi.pi</title>
+
+  <!-- Pi SDK -->
+  <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 </head>
 
 <body>
+
   <h1>OrganicAgropastoralepi.pi</h1>
 
   <h2>Bienvenue</h2>
@@ -19,17 +24,73 @@
     Agriculture biologique • Élevage • Pisciculture • Irrigation • Énergie solaire
   </p>
 
+  <h2>Connexion</h2>
+
+  <button id="loginButton">
+    🔐 Se connecter avec Pi
+  </button>
+
+  <p id="status"></p>
+
   <h2>Nos produits</h2>
 
   <ul>
-    <li>Panier de légumes bio</li>
-    <li>Miel naturel</li>
-    <li>Œufs fermiers</li>
-    <li>Fromage de chèvre</li>
+    <li>Panier de légumes bio — 0,5 Pi</li>
+    <li>Miel naturel — 1 Pi</li>
+    <li>Œufs fermiers — 0,3 Pi</li>
+    <li>Fromage de chèvre — 2 Pi</li>
   </ul>
 
   <p>
     Paiement en Pi — Testnet
   </p>
+
+  <script>
+
+    // Initialisation du Pi SDK
+    Pi.init({
+      version: "2.0",
+      sandbox: true
+    });
+
+    const loginButton = document.getElementById("loginButton");
+    const status = document.getElementById("status");
+
+    loginButton.addEventListener("click", async function () {
+
+      status.textContent = "Connexion à Pi en cours...";
+
+      try {
+
+        const scopes = ["username"];
+
+        const authResult = await Pi.authenticate(
+          scopes,
+          function onIncompletePaymentFound(payment) {
+            console.log("Paiement incomplet :", payment);
+          }
+        );
+
+        console.log("Utilisateur Pi :", authResult.user);
+
+        status.textContent =
+          "✅ Bienvenue " + authResult.user.username + " !";
+
+        loginButton.textContent =
+          "✅ Connecté avec Pi";
+
+      } catch (error) {
+
+        console.error(error);
+
+        status.textContent =
+          "❌ Connexion Pi échouée. Ouvrez la plateforme avec Pi Browser.";
+
+      }
+
+    });
+
+  </script>
+
 </body>
 </html>
