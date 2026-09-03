@@ -6,7 +6,6 @@
 
   <title>OrganicAgropastoralepi.pi</title>
 
-  <!-- Pi SDK -->
   <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 </head>
 
@@ -24,13 +23,13 @@
     Agriculture biologique • Élevage • Pisciculture • Irrigation • Énergie solaire
   </p>
 
-  <h2>Connexion</h2>
+  <h2>Connexion à Pi</h2>
 
   <button id="loginButton">
     🔐 Se connecter avec Pi
   </button>
 
-  <p id="status"></p>
+  <p id="status">En attente de connexion...</p>
 
   <h2>Nos produits</h2>
 
@@ -46,50 +45,59 @@
   </p>
 
   <script>
-
-    // Initialisation du Pi SDK
-    Pi.init({
-      version: "2.0",
-      sandbox: true
-    });
-
     const loginButton = document.getElementById("loginButton");
     const status = document.getElementById("status");
 
-    loginButton.addEventListener("click", async function () {
+    // Vérification du chargement du SDK Pi
+    if (typeof Pi === "undefined") {
+      status.textContent =
+        "❌ Le SDK Pi n'est pas chargé. Ouvrez l'application dans Pi Browser.";
+      loginButton.disabled = true;
+    } else {
 
-      status.textContent = "Connexion à Pi en cours...";
+      // Initialisation Pi Testnet
+      Pi.init({
+        version: "2.0",
+        sandbox: true
+      });
 
-      try {
+      loginButton.addEventListener("click", async () => {
 
-        const scopes = ["username"];
+        status.textContent = "Connexion à Pi en cours...";
+        loginButton.disabled = true;
 
-        const authResult = await Pi.authenticate(
-          scopes,
-          function onIncompletePaymentFound(payment) {
-            console.log("Paiement incomplet :", payment);
+        try {
+
+          const authResult = await Pi.authenticate(
+            ["username"],
+            function onIncompletePaymentFound(payment) {
+              console.log("Paiement incomplet :", payment);
+            }
+          );
+
+          console.log("Authentification Pi réussie :", authResult);
+
+          if (authResult && authResult.user) {
+            status.textContent =
+              "✅ Bienvenue " + authResult.user.username + " !";
+
+            loginButton.textContent = "✅ Connecté avec Pi";
+          } else {
+            status.textContent =
+              "✅ Connexion Pi réussie.";
           }
-        );
 
-        console.log("Utilisateur Pi :", authResult.user);
+        } catch (error) {
 
-        status.textContent =
-          "✅ Bienvenue " + authResult.user.username + " !";
+          console.error("Erreur Pi :", error);
 
-        loginButton.textContent =
-          "✅ Connecté avec Pi";
+          status.textContent =
+            "❌ Connexion Pi échouée. Ouvrez cette application avec Pi Browser.";
 
-      } catch (error) {
-
-        console.error(error);
-
-        status.textContent =
-          "❌ Connexion Pi échouée. Ouvrez la plateforme avec Pi Browser.";
-
-      }
-
-    });
-
+          loginButton.disabled = false;
+        }
+      });
+    }
   </script>
 
 </body>
