@@ -3,15 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>OrganicAgropastoralepi.pi</title>
-
-  <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 </head>
 
 <body>
 
-  <h1>OrganicAgropastoralepi.pi</h1>
+  <h1>🌱 OrganicAgropastoralepi.pi</h1>
 
   <h2>Bienvenue</h2>
 
@@ -23,15 +20,7 @@
     Agriculture biologique • Élevage • Pisciculture • Irrigation • Énergie solaire
   </p>
 
-  <h2>Connexion à Pi</h2>
-
-  <button id="loginButton">
-    🔐 Se connecter avec Pi
-  </button>
-
-  <p id="status">En attente de connexion...</p>
-
-  <h2>Nos produits</h2>
+  <h2>Nos produits biologiques</h2>
 
   <ul>
     <li>Panier de légumes bio — 0,5 Pi</li>
@@ -44,61 +33,11 @@
     Paiement en Pi — Testnet
   </p>
 
-  <script>
-    const loginButton = document.getElementById("loginButton");
-    const status = document.getElementById("status");
+  <hr>
 
-    // Vérification du chargement du SDK Pi
-    if (typeof Pi === "undefined") {
-      status.textContent =
-        "❌ Le SDK Pi n'est pas chargé. Ouvrez l'application dans Pi Browser.";
-      loginButton.disabled = true;
-    } else {
-
-      // Initialisation Pi Testnet
-      Pi.init({
-        version: "2.0",
-        sandbox: true
-      });
-
-      loginButton.addEventListener("click", async () => {
-
-        status.textContent = "Connexion à Pi en cours...";
-        loginButton.disabled = true;
-
-        try {
-
-          const authResult = await Pi.authenticate(
-            ["username"],
-            function onIncompletePaymentFound(payment) {
-              console.log("Paiement incomplet :", payment);
-            }
-          );
-
-          console.log("Authentification Pi réussie :", authResult);
-
-          if (authResult && authResult.user) {
-            status.textContent =
-              "✅ Bienvenue " + authResult.user.username + " !";
-
-            loginButton.textContent = "✅ Connecté avec Pi";
-          } else {
-            status.textContent =
-              "✅ Connexion Pi réussie.";
-          }
-
-        } catch (error) {
-
-          console.error("Erreur Pi :", error);
-
-          status.textContent =
-            "❌ Connexion Pi échouée. Ouvrez cette application avec Pi Browser.";
-
-          loginButton.disabled = false;
-        }
-      });
-    }
-  </script>
+  <p>
+    © 2026 OrganicAgropastoralepi.pi
+  </p>
 
 </body>
 </html>
